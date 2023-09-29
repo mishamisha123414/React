@@ -1,0 +1,49 @@
+/* Стилі для центрування заголовка сторінки */
+.page-header {
+  text-align: center;
+  padding: 20px 0; /* Додайте відступи, які вам подобаються */
+}
+
+/* Стилі для центрування зображення */
+.image-container {
+  text-align: center;
+}
+
+.image {
+  display: inline-block;
+  max-width: 100%; /* Обмежте максимальну ширину зображення */
+  height: auto; /* Автоматична висота для збереження пропорцій */
+}
+
+/* Стилі для контейнера кнопок та навігаційних крапочок */
+.button-container,
+.navigationDots {
+  text-align: center;
+  padding: 20px 0; /* Додайте відступи, які вам подобаються */
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background-color: #ccc; /* Колір крапочок */
+  border-radius: 50%; /* Закруглені кути, щоб отримати круглі крапочки */
+  display: inline-block;
+  margin: 0 5px; /* Відступи між крапочками */
+}
+
+/* Респонсивність для збільшення відступів на малих екранах */
+@media (max-width: 768px) {
+  .page-header,
+  .image-container,
+  .button-container,
+  .navigationDots {
+    padding: 10px 0; /* Зменшимо відступи на малих екранах */
+  }
+  
+  /* Збільшимо розмір крапочок на малих екранах */
+  .dot {
+    width: 12px;
+    height: 12px;
+    margin: 0 7px; /* Збільшимо відступи між крапочками */
+  }
+}

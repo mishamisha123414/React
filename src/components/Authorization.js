@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import jwt from "jwt-decode";
 
-function Register() {
+
+
+function Authorization() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
-    phone: '',
     password: '',
-    google_id: '',
-    coock: false,
   });
-  const navigate = useNavigate();
-
   const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
@@ -22,27 +21,21 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Видаляємо google_id перед відправкою даних через форму
-    const { google_id, ...formDataWithoutGoogleId } = formData;
-
     try {
-      const response = await axios.post('http://api.homiechef.loc/register', formDataWithoutGoogleId);
-      setMessage(response.data.message);
-
+      const response = await axios.post('http://api.homiechef.loc/auth', formData);
       if (response.status === 200) {
-        navigate('/role');
+        localStorage.setItem('userEmail', formData.email);
+        navigate('/congratulations');
       }
     } catch (error) {
       if (error.response && error.response.data) {
         setMessage(error.response.data.message);
       } else {
-        setMessage('Помилка при реєстрації');
+        setMessage('Помилка авторизації');
       }
       console.error(error);
     }
   };
-
   const googleProvider = new GoogleOAuthProvider({
     clientId: '',
     clientSecret: '',
@@ -57,7 +50,6 @@ function Register() {
     formData.email = jwt(token.credential).email;
     formData.phone = "";
     formData.password = "";
-    formData.coock = false;
 
     if (token) {
       formData.google_id = google_id;
@@ -72,7 +64,7 @@ function Register() {
       try {
         const response = await axios.post('http://api.homiechef.loc/register', formData);
         setMessage(response.data.message);
-
+        localStorage.setItem('userEmail', formData.email);
         if (response.status === 200) {
           navigate('/congratulations');
         }
@@ -89,7 +81,7 @@ function Register() {
 
   return (
     <div>
-      <h2>User Registration</h2>
+      <h2>Authorization</h2>
       {message && <p>{message}</p>}
       <form onSubmit={handleSubmit}>
         <div>
@@ -103,17 +95,7 @@ function Register() {
           />
         </div>
         <div>
-          <label>Телефон:</label>
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Пароль:</label>
+          <label>Password:</label>
           <input
             type="password"
             name="password"
@@ -121,6 +103,12 @@ function Register() {
             onChange={handleChange}
             required
           />
+        </div>
+        <div>
+          <button type="submit">Login</button>
+        </div>
+        <div>
+        <Link to={'/registration'}>Create account</Link>
         </div>
         <div>
           <GoogleLogin
@@ -132,12 +120,9 @@ function Register() {
             onSuccess={onSuccess}
           />
         </div>
-        <div>
-          <button type="submit">SignUp</button>
-        </div>
       </form>
     </div>
   );
 }
 
-export default Register;
+export default Authorization;
